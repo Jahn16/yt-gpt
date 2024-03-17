@@ -49,23 +49,27 @@ def test_get_yt_id_invalid_url():
         YoutubeClient._get_youtube_id(yt_url)
 
 
-def test_get_transcription(
-    transcript: Transcript, transcript_text: str, mocker
-):
+def test_get_transcript(transcript: Transcript, transcript_text: str, mocker):
     mock_yt = mocker.patch("app.providers.youtube.YouTubeTranscriptApi")
-    mock_yt.get_transcription.return_value = transcript
-    mock_yt.format_transcript.return_value = transcript_text
-    result = YoutubeClient.get_transcription(transcript._url)
+    mock_formatter = mocker.patch("app.providers.youtube.TextFormatter")
+    mock_yt.get_transcript.return_value = transcript
+    mock_formatter().format_transcript.return_value = transcript_text
+    result = YoutubeClient.get_transcript(transcript._url)
     assert result == transcript_text
 
 
-def test_get_transcription_not_found(
+def test_get_transcript_not_found(
     yt_url: str, transcript: Transcript, transcript_text: str, mocker
 ):
     mock_yt = mocker.patch("app.providers.youtube.YouTubeTranscriptApi")
-    mock_yt.get_transcription.side_effect = NoTranscriptFound
-    mock_yt.list_transcriptions.return_value = TranscriptList(
-        transcript.video_id, transcript._url, {"en": Transcript}, {}
+    mock_formatter = mocker.patch("app.providers.youtube.TextFormatter")
+    mock_yt.get_transcript.side_effect = NoTranscriptFound(
+        transcript.video_id, "en", None
     )
-    result = YoutubeClient.get_transcription(yt_url)
+    mock_yt.list_transcripts.return_value = TranscriptList(
+        transcript.video_id, {"en": Transcript}, {}, [{}]
+    )
+    mock_formatter().format_transcript.return_value = transcript_text
+    result = YoutubeClient.get_transcript(yt_url)
     assert result == transcript_text
+    mock_formatter().format_transcript.assert_called_with(transcript)
