@@ -3,3 +3,4 @@ uvicorn
 youtube-transcript-api
 structlog
 pydantic-settings
+openai
