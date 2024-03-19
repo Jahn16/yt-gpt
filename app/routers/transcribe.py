@@ -1,11 +1,19 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 
+from app.config import Settings
+from app.deps import get_settings
+from app.providers.openai import OpenAIClient
 from app.providers.youtube import YoutubeClient
 
 router = APIRouter(prefix="/transcribe")
 
 
 @router.get("/")
-def transcribe(youtube_url: str) -> str:
+async def transcribe(
+    youtube_url: str, prompt: str, settings: Settings = Depends(get_settings)
+) -> str:
     transcription = YoutubeClient.get_transcript(youtube_url)
-    return transcription
+    openai_client = OpenAIClient(settings)
+    result = await openai_client.chat(prompt, transcription)
+
+    return result
