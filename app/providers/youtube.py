@@ -3,6 +3,7 @@ from urllib.parse import parse_qs, urlparse
 import structlog
 from youtube_transcript_api import (
     NoTranscriptFound,
+    Transcript,
     TranscriptsDisabled,
     YouTubeTranscriptApi,
 )
@@ -27,6 +28,7 @@ class YoutubeClient:
     def get_transcript(yt_url: str):
         yt_id = YoutubeClient._get_youtube_id(yt_url)
 
+        logger.info("Fetching transcript", youtube_id=yt_id)
         formatter = TextFormatter()
         try:
             transcript_lines: list[
@@ -42,7 +44,11 @@ class YoutubeClient:
             return formatter.format_transcript(transcript_lines)
 
         transcript_list = YouTubeTranscriptApi.list_transcripts(yt_id)
-        transcript = transcript_list.__iter__().__next__()
+        transcript: Transcript = transcript_list.__iter__().__next__()
         transcript_lines = transcript.fetch()
-        logger.info("Transcript found", youtube_id=yt_id)
+        logger.info(
+            "Transcript found",
+            youtube_id=yt_id,
+            language=transcript.language_code,
+        )
         return formatter.format_transcript(transcript_lines)
