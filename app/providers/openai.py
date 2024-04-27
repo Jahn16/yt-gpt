@@ -16,7 +16,7 @@ class OpenAIClient:
             api_key=self._api_key,
         )
 
-        logger.ainfo("Chat completion started")
+        await logger.ainfo("Chat completion started")
         chat_completion = await client.chat.completions.create(
             messages=[
                 {
@@ -26,5 +26,5 @@ class OpenAIClient:
             ],
             model=self._model,
         )
-        logger.ainfo("Chat completion completed")
+        await logger.ainfo("Chat completion completed")
         return chat_completion.choices[0].message.content or ""
