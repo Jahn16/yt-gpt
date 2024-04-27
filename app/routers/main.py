@@ -4,6 +4,7 @@ from app.config import Settings
 from app.deps import get_settings
 from app.providers.openai import OpenAIClient
 from app.providers.youtube import YoutubeClient
+from app.schemas.prompt import Prompt
 
 router = APIRouter()
 
@@ -14,11 +15,11 @@ async def transcribe(youtube_url: str) -> str:
     return transcription
 
 
-@router.get("/gpt")
+@router.post("/gpt")
 async def gpt(
-    transcription: str, prompt: str, settings: Settings = Depends(get_settings)
+    prompt: Prompt, settings: Settings = Depends(get_settings)
 ) -> str:
     openai_client = OpenAIClient(settings)
-    result = await openai_client.chat(prompt, transcription)
+    result = await openai_client.chat(prompt.prompt, prompt.transcription)
 
     return result
