@@ -4,15 +4,18 @@ from app.config import Settings
 from app.deps import get_settings
 from app.providers.openai import OpenAIClient
 from app.providers.youtube import YoutubeClient
+from app.providers.youtube_metadata import PytubeFetcher
 from app.schemas.prompt import Prompt
+from app.schemas.transcription import Transcription
 
 router = APIRouter()
 
 
 @router.get("/transcribe")
-async def transcribe(youtube_url: str) -> str:
+async def transcribe(youtube_url: str) -> Transcription:
+    video_title = PytubeFetcher.get_video_title(youtube_url)
     transcription = YoutubeClient.get_transcript(youtube_url)
-    return transcription
+    return Transcription(video_title=video_title, transcription=transcription)
 
 
 @router.post("/gpt")
