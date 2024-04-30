@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 
 
-class Transcription(BaseModel):
-    video_title: str
+class Video(BaseModel):
+    title: str
     transcription: str
