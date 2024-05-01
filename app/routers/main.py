@@ -23,6 +23,6 @@ async def gpt(
     prompt: Prompt, settings: Settings = Depends(get_settings)
 ) -> str:
     openai_client = OpenAIClient(settings)
-    result = await openai_client.chat(prompt.prompt, prompt.transcription)
+    result = await openai_client.chat(prompt)
 
     return result
