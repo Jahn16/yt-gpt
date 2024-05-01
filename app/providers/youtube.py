@@ -1,7 +1,9 @@
+import abc
 from typing import cast
 from urllib.parse import parse_qs, urlparse
 
 import structlog
+from pytube import YouTube
 from youtube_transcript_api import (
     NoTranscriptFound,
     Transcript,
@@ -11,6 +13,32 @@ from youtube_transcript_api import (
 from youtube_transcript_api.formatters import TextFormatter
 
 logger = structlog.get_logger()
+
+
+class YoutubeClient:
+    def __init__(self) -> None:
+        self._metadata_fetcher = PytubeFetcher
+        self._transcript_fetcher = TranscriptFetcher
+
+    def get_title(self, yt_url: str) -> str:
+        return self._metadata_fetcher.get_video_title(yt_url)
+
+    def get_transcript(self, yt_url: str) -> str:
+        return self._transcript_fetcher.get_transcript(yt_url)
+
+
+class MetadataFetcher(abc.ABC):
+    @staticmethod
+    @abc.abstractmethod
+    def get_video_title(yt_url: str) -> str:
+        raise NotImplementedError
+
+
+class PytubeFetcher(MetadataFetcher):
+    @staticmethod
+    def get_video_title(yt_url: str) -> str:
+        yt = YouTube(yt_url)
+        return cast(str, yt.title)
 
 
 class TranscriptFetcher:
