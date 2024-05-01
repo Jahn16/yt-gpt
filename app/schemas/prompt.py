@@ -1,6 +1,8 @@
 from pydantic import BaseModel
 
+from app.schemas.video import Video
+
 
 class Prompt(BaseModel):
-    transcription: str
+    video: Video
     prompt: str
