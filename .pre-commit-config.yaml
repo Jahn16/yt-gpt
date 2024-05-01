@@ -21,6 +21,5 @@ repos:
       - id: mypy
         additional_dependencies:
           - pydantic~=2.0
-          - sqlalchemy~=2.0
-          - minio
+          - pytube
         exclude: tests/
