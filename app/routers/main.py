@@ -11,7 +11,7 @@ router = APIRouter()
 
 
 @router.get("/transcribe")
-async def transcribe(youtube_url: str) -> Video:
+def transcribe(youtube_url: str) -> Video:
     youtube_client = YoutubeClient()
     video_title = youtube_client.get_title(youtube_url)
     transcription = youtube_client.get_transcript(youtube_url)
