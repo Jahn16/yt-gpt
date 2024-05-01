@@ -11,7 +11,9 @@ class OpenAIClient:
         self._api_key = settings.openai_api_key
         self._model = settings.openai_model
 
-    async def chat(self, prompt: str, transcription: str) -> str:
+    async def chat(
+        self, prompt: str, transcription: str, video_title: str = ""
+    ) -> str:
         client = AsyncOpenAI(
             api_key=self._api_key,
         )
@@ -21,7 +23,7 @@ class OpenAIClient:
             messages=[
                 {
                     "role": "system",
-                    "content": f"You are an assistant that will receive a transcript from a video. Your task is to read the text and answer this question: {prompt}. Answer in the languague that the question is written in. The trascript is: {transcription}",  # noqa: E501
+                    "content": f"You are an assistant that will receive a transcript from a video. Your task is to read the text and answer this question: {prompt}. Answer in the languague that the question is written in. The video title is {video_title} and trascript is: {transcription}",  # noqa: E501
                 },
             ],
             model=self._model,
