@@ -1,4 +1,6 @@
 # Youtube GPT
+![240501_18h31m37s_screenshot](https://github.com/Jahn16/yt-gpt/assets/40438992/b003e3f4-4963-42bd-8fdb-31e3481fda66)
+
 
 ## Description
 
