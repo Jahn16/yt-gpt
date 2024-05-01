@@ -54,10 +54,12 @@
 					type="text"
 					class="form-control"
 					placeholder="Enter your message"
-					aria-label="Recipient's username"
+					aria-label="Enter your message"
 					aria-describedby="button-addon2"
 				/>
-				<button class="btn btn-primary" type="submit" id="button-addon2">Submit</button>
+				<button class="btn btn-primary" type="submit" id="button-addon2"
+					>Submit <i class="bi bi-send-fill"></i></button
+				>
 			</div>
 		</form>
 	</div>
@@ -65,11 +67,11 @@
 
 <style>
 	#chat {
-    margin-top: 20px;
+		margin-top: 20px;
 		padding-bottom: 10px;
 	}
-  form {
-    margin: auto;
-    width: 90%;
-  }
+	form {
+		margin: auto;
+		width: 60%;
+	}
 </style>

@@ -16,7 +16,7 @@
 <style>
 	.card {
 		padding: 0px;
-    width: 90%;
+    width: 60%;
     margin: auto;
 
 	}
