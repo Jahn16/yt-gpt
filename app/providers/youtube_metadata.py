@@ -1,4 +1,5 @@
 import abc
+from typing import cast
 
 from pytube import YouTube
 
@@ -14,4 +15,4 @@ class PytubeFetcher(YoutubeFetcher):
     @staticmethod
     def get_video_title(yt_url: str) -> str:
         yt = YouTube(yt_url)
-        return yt.title
+        return cast(str, yt.title)
