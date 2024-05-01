@@ -9,8 +9,6 @@ This application is made for making possible a user to talk to a Youtube video. 
 ## Table of Contents
 
 - [Usage](#usage)
-- [Roadmap](#roadmap)
-- [Credits](#credits)
 - [License](#license)
 
 ## Usage
