@@ -1,8 +1,11 @@
 import pytest
-from youtube_transcript_api import (NoTranscriptFound, Transcript,
-                                    TranscriptList)
+from youtube_transcript_api import (
+    NoTranscriptFound,
+    Transcript,
+    TranscriptList,
+)
 
-from app.providers.youtube import YoutubeClient
+from app.providers.youtube import TranscriptFetcher
 
 
 @pytest.fixture
@@ -27,26 +30,26 @@ def transcript_text():
 
 def test_get_yt_id_normal_url(yt_id: str):
     yt_url = f"https://www.youtube.com/watch?v={yt_id}"
-    id = YoutubeClient._get_youtube_id(yt_url)
+    id = TranscriptFetcher._get_youtube_id(yt_url)
     assert id == yt_id
 
 
 def test_get_yt_id_from_share_url(yt_id: str):
     yt_url = f"https://youtu.be/{yt_id}"
-    id = YoutubeClient._get_youtube_id(yt_url)
+    id = TranscriptFetcher._get_youtube_id(yt_url)
     assert id == yt_id
 
 
 def test_get_yt_id_url_with_query(yt_id: str):
     yt_url = f"https://www.youtube.com/watch?v={yt_id}&t=10s"
-    id = YoutubeClient._get_youtube_id(yt_url)
+    id = TranscriptFetcher._get_youtube_id(yt_url)
     assert id == yt_id
 
 
 def test_get_yt_id_invalid_url():
     yt_url = "https://example.com/invalid"
     with pytest.raises(ValueError):
-        YoutubeClient._get_youtube_id(yt_url)
+        TranscriptFetcher._get_youtube_id(yt_url)
 
 
 def test_get_transcript(transcript: Transcript, transcript_text: str, mocker):
@@ -54,7 +57,7 @@ def test_get_transcript(transcript: Transcript, transcript_text: str, mocker):
     mock_formatter = mocker.patch("app.providers.youtube.TextFormatter")
     mock_yt.get_transcript.return_value = transcript
     mock_formatter().format_transcript.return_value = transcript_text
-    result = YoutubeClient.get_transcript(transcript._url)
+    result = TranscriptFetcher.get_transcript(transcript._url)
     assert result == transcript_text
 
 
@@ -70,6 +73,6 @@ def test_get_transcript_not_found(
         transcript.video_id, {"en": Transcript}, {}, [{}]
     )
     mock_formatter().format_transcript.return_value = transcript_text
-    result = YoutubeClient.get_transcript(yt_url)
+    result = TranscriptFetcher.get_transcript(yt_url)
     assert result == transcript_text
     mock_formatter().format_transcript.assert_called_with(transcript)

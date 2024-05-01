@@ -1,3 +1,4 @@
+from typing import cast
 from urllib.parse import parse_qs, urlparse
 
 import structlog
@@ -12,7 +13,7 @@ from youtube_transcript_api.formatters import TextFormatter
 logger = structlog.get_logger()
 
 
-class YoutubeClient:
+class TranscriptFetcher:
     @staticmethod
     def _get_youtube_id(yt_url: str) -> str:
         parse_result = urlparse(yt_url)
@@ -25,8 +26,8 @@ class YoutubeClient:
         raise ValueError(f"Invalid YouTube URL: {yt_url}")
 
     @staticmethod
-    def get_transcript(yt_url: str):
-        yt_id = YoutubeClient._get_youtube_id(yt_url)
+    def get_transcript(yt_url: str) -> str:
+        yt_id = TranscriptFetcher._get_youtube_id(yt_url)
 
         logger.info("Fetching transcript", youtube_id=yt_id)
         formatter = TextFormatter()
@@ -41,7 +42,7 @@ class YoutubeClient:
             logger.info("No english transcript found", youtube_id=yt_id)
         else:
             logger.info("Transcript found", youtube_id=yt_id)
-            return formatter.format_transcript(transcript_lines)
+            return cast(str, formatter.format_transcript(transcript_lines))
 
         transcript_list = YouTubeTranscriptApi.list_transcripts(yt_id)
         transcript: Transcript = transcript_list.__iter__().__next__()
@@ -51,4 +52,4 @@ class YoutubeClient:
             youtube_id=yt_id,
             language=transcript.language_code,
         )
-        return formatter.format_transcript(transcript_lines)
+        return cast(str, formatter.format_transcript(transcript_lines))
