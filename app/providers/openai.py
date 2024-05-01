@@ -2,6 +2,7 @@ import structlog
 from openai import AsyncOpenAI
 
 from app.config import Settings
+from app.schemas.prompt import Prompt
 
 logger = structlog.get_logger()
 
@@ -11,9 +12,7 @@ class OpenAIClient:
         self._api_key = settings.openai_api_key
         self._model = settings.openai_model
 
-    async def chat(
-        self, prompt: str, transcription: str, video_title: str = ""
-    ) -> str:
+    async def chat(self, prompt: Prompt) -> str:
         client = AsyncOpenAI(
             api_key=self._api_key,
         )
@@ -23,7 +22,7 @@ class OpenAIClient:
             messages=[
                 {
                     "role": "system",
-                    "content": f"You are an assistant that will receive a transcript from a video. Your task is to read the text and answer this question: {prompt}. Answer in the languague that the question is written in. The video title is {video_title} and trascript is: {transcription}",  # noqa: E501
+                    "content": f"You are an assistant that will receive a transcript from a video. Your task is to read the text and answer this question: {prompt.prompt}. Answer in the languague that the question is written in. The video title is {prompt.video.title} and trascript is: {prompt.video.transcription}",  # noqa: E501
                 },
             ],
             model=self._model,
