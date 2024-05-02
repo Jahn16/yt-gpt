@@ -1,39 +1,3 @@
-<!-- <script> -->
-<!-- 	export let messages = []; -->
-
-<!-- 	let newMessage = ''; -->
-<!-- 	let transcription = ''; -->
-<!-- 	const errorMessage = -->
-<!-- 		'Oh no! It seems like we encountered an internal server error. 🛠️  Please try again later or contact support for assistance. Apologies for the inconvenience!'; -->
-<!-- 	const sendMessage = async () => { -->
-<!-- 		messages = [...messages, { author: 'user', content: newMessage }]; -->
-<!-- 		if (!transcription) { -->
-<!-- 			let youtubeUrl = newMessage; -->
-<!-- 			newMessage = ''; -->
-<!-- 			try { -->
-<!-- 				transcription = await getTranscription(youtubeUrl); -->
-<!-- 			} catch (error) { -->
-<!-- 				console.log(error); -->
-<!-- 				messages = [...messages, { author: 'bot', content: errorMessage }]; -->
-<!-- 				return; -->
-<!-- 			} -->
-<!-- 			messages = [ -->
-<!-- 				...messages, -->
-<!-- 				{ -->
-<!-- 					author: 'bot', -->
-<!-- 					content: -->
-<!-- 						"The transcription is complete. 🎉 Please feel free to ask me any questions you have about the video's content. Let's dive in!" -->
-<!-- 				} -->
-<!-- 			]; -->
-<!-- 		} else { -->
-<!-- 			let prompt = newMessage; -->
-<!-- 			newMessage = ''; -->
-<!-- 			messages = [...messages, { author: 'bot', content: GPTResponse }]; -->
-<!-- 		} -->
-<!-- 	}; -->
-
-<!-- </script> -->
-
 <script lang="ts">
 	import Message from '../components/Message.svelte';
 	import type { PageServerData } from './$types';
@@ -46,7 +10,7 @@
 		{#each data.chat as message}
 			<Message {message} />{/each}
 	</div>
-	<div style="margin-top: 10px;">
+	<div id="chat-form" style="margin-top: 10px;">
 		<form method="POST">
 			<div class="input-group mb-3">
 				<input
@@ -66,11 +30,7 @@
 </div>
 
 <style>
-	#chat {
-		margin-top: 20px;
-		padding-bottom: 10px;
-	}
-	form {
+  #chat-form {
 		margin: auto;
 		width: 60%;
 	}
