@@ -3,7 +3,7 @@ import { env } from '$env/dynamic/public'
 import type { RequestEvent } from './$types'
 
 export const ssr = false
-export const chat: Chat = [{
+const chat: Chat = [{
   author: 'bot',
   content: "👋 I'm your YouTube Transcription Chatbot! Please share a YouTube video URL with me, and I'll extract the transcription to answer your questions based on the video's content. Just paste the URL, and let's get started!"
 }]
