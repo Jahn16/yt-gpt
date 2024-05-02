@@ -10,9 +10,9 @@ jobs:
     strategy:
       matrix:
         docker:
-          - name: bsc-backend
+          - name: ytgpt-backend
             context: backend
-          - name: bsc-frontend
+          - name: ytgpt-frontend
             context: frontend
     steps:
       -
