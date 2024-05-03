@@ -8,7 +8,7 @@ from youtube_transcript_api import (
     TranscriptsDisabled,
 )
 
-from app.errors.youtube import TranscriptNotFoundError
+from app.errors.youtube import InvalidUrlError, TranscriptNotFoundError
 from app.providers.youtube import TranscriptFetcher
 
 
@@ -52,7 +52,7 @@ def test_get_yt_id_url_with_query(yt_id: str):
 
 def test_get_yt_id_invalid_url():
     yt_url = "https://example.com/invalid"
-    with pytest.raises(ValueError):
+    with pytest.raises(InvalidUrlError):
         TranscriptFetcher._get_youtube_id(yt_url)
 
 
