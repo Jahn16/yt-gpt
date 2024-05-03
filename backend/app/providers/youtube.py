@@ -4,6 +4,7 @@ from urllib.parse import parse_qs, urlparse
 
 import structlog
 from pytube import YouTube
+from pytube.exceptions import RegexMatchError
 from youtube_transcript_api import (
     NoTranscriptFound,
     Transcript,
@@ -39,7 +40,10 @@ class MetadataFetcher(abc.ABC):
 class PytubeFetcher(MetadataFetcher):
     @staticmethod
     def get_video_title(yt_url: str) -> str:
-        yt = YouTube(yt_url)
+        try:
+            yt = YouTube(yt_url)
+        except RegexMatchError:
+            raise InvalidUrlError(f"Invalid YouTube URL: {yt_url}")
         return cast(str, yt.title)
 
 
