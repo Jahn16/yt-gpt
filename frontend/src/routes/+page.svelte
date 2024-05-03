@@ -12,27 +12,37 @@
 	];
 
 	let newMessage = '';
+  let loading = false;
 	let video: Video;
+	const addMessageToChat = (message: string, author: string) => {
+		chat = [...chat, { author, content: message }];
+	};
 	const sendMessage = async () => {
-		chat = [...chat, { author: 'user', content: newMessage }];
+    addMessageToChat(newMessage, 'user');
 		if (!video) {
 			let youtubeUrl = newMessage;
 			newMessage = '';
-			video = await getTranscription(youtubeUrl);
-			chat = [
-				...chat,
-				{
-					author: 'bot',
-					content:
-						"The transcription is complete. 🎉 Please feel free to ask me any questions you have about the video's content. Let's dive in!"
-				}
-			];
-      return
+			try {
+				video = await getTranscription(youtubeUrl);
+			} catch (e: unknown) {
+				addMessageToChat(e.message, 'bot');
+        return
+			}
+			addMessageToChat(
+				"The transcription is complete. 🎉 Please feel free to ask me any questions you have about the video's content. Let's dive in!",
+				'bot'
+			);
+			return;
 		}
 
-    const prompt = newMessage;
-    newMessage = '';
-		chat = [...chat, { author: 'bot', content: await callGPT(prompt, video) }];
+		const prompt = newMessage;
+		newMessage = '';
+		try {
+			const gptResponse = await callGPT(prompt, video);
+			addMessageToChat(gptResponse, 'bot');
+		} catch (e: unknown) {
+			addMessageToChat(e.message, 'bot');
+		}
 	};
 </script>
 
