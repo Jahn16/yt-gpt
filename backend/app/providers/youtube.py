@@ -12,6 +12,8 @@ from youtube_transcript_api import (
 )
 from youtube_transcript_api.formatters import TextFormatter
 
+from app.errors.youtube import InvalidUrlError, TranscriptNotFoundError
+
 logger = structlog.get_logger()
 
 
@@ -51,7 +53,7 @@ class TranscriptFetcher:
                 return query["v"][0]
         elif parse_result.netloc == "youtu.be":
             return parse_result.path[1:]
-        raise ValueError(f"Invalid YouTube URL: {yt_url}")
+        raise InvalidUrlError(f"Invalid YouTube URL: {yt_url}")
 
     @staticmethod
     def get_transcript(yt_url: str) -> str:
@@ -63,9 +65,11 @@ class TranscriptFetcher:
             transcript_lines: list[
                 dict[str, str]
             ] = YouTubeTranscriptApi.get_transcript(yt_id)
-        except TranscriptsDisabled as e:
+        except TranscriptsDisabled:
             logger.warning("Transcripts disabled", youtube_id=yt_id)
-            raise e
+            raise TranscriptNotFoundError(
+                "Transcripts disabled for this video"
+            )
         except NoTranscriptFound:
             logger.info("No english transcript found", youtube_id=yt_id)
         else:
@@ -73,7 +77,11 @@ class TranscriptFetcher:
             return cast(str, formatter.format_transcript(transcript_lines))
 
         transcript_list = YouTubeTranscriptApi.list_transcripts(yt_id)
-        transcript: Transcript = transcript_list.__iter__().__next__()
+        try:
+            transcript: Transcript = transcript_list.__iter__().__next__()
+        except StopIteration:
+            logger.info("No transcript found", youtube_id=yt_id)
+            raise TranscriptNotFoundError("No transcript found")
         transcript_lines = transcript.fetch()
         logger.info(
             "Transcript found",
