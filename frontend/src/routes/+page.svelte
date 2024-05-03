@@ -12,13 +12,14 @@
 	];
 
 	let newMessage = '';
-  let loading = false;
+	let loading = false;
 	let video: Video;
 	const addMessageToChat = (message: string, author: string) => {
 		chat = [...chat, { author, content: message }];
 	};
 	const sendMessage = async () => {
-    addMessageToChat(newMessage, 'user');
+		loading = true;
+		addMessageToChat(newMessage, 'user');
 		if (!video) {
 			let youtubeUrl = newMessage;
 			newMessage = '';
@@ -26,12 +27,14 @@
 				video = await getTranscription(youtubeUrl);
 			} catch (e: unknown) {
 				addMessageToChat(e.message, 'bot');
-        return
+				loading = false;
+				return;
 			}
 			addMessageToChat(
 				"The transcription is complete. 🎉 Please feel free to ask me any questions you have about the video's content. Let's dive in!",
 				'bot'
 			);
+			loading = false;
 			return;
 		}
 
@@ -43,6 +46,7 @@
 		} catch (e: unknown) {
 			addMessageToChat(e.message, 'bot');
 		}
+		loading = false;
 	};
 </script>
 
@@ -63,9 +67,16 @@
 					aria-label="Enter your message"
 					aria-describedby="button-addon2"
 				/>
-				<button class="btn btn-primary" type="submit" id="button-addon2"
-					>Submit <i class="bi bi-send-fill"></i></button
-				>
+				<button class="btn btn-primary" type="submit" id="button-addon2" disabled={loading}>
+					{#if loading}
+						Loading 
+            <div class="spinner-border spinner-border-sm" role="status">
+							<span class="sr-only"></span>
+						</div>
+					{:else}
+						Submit <i class="bi bi-send-fill"></i>
+					{/if}
+				</button>
 			</div>
 		</form>
 	</div>
