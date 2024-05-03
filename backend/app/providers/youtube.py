@@ -43,6 +43,7 @@ class PytubeFetcher(MetadataFetcher):
         try:
             yt = YouTube(yt_url)
         except RegexMatchError:
+            logger.warning("Invalid YouTube URL", youtube_url=yt_url)
             raise InvalidUrlError(f"Invalid YouTube URL: {yt_url}")
         return cast(str, yt.title)
 
@@ -57,6 +58,7 @@ class TranscriptFetcher:
                 return query["v"][0]
         elif parse_result.netloc == "youtu.be":
             return parse_result.path[1:]
+        logger.warning("Invalid YouTube URL", youtube_url=yt_url)
         raise InvalidUrlError(f"Invalid YouTube URL: {yt_url}")
 
     @staticmethod
