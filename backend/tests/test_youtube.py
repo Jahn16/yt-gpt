@@ -1,3 +1,5 @@
+from unittest.mock import MagicMock
+
 import pytest
 from youtube_transcript_api import (
     NoTranscriptFound,
@@ -66,13 +68,15 @@ def test_get_transcript_english_not_found(
 ):
     mock_yt = mocker.patch("app.providers.youtube.YouTubeTranscriptApi")
     mock_formatter = mocker.patch("app.providers.youtube.TextFormatter")
-    mock_yt.get_transcript.side_effect = NoTranscriptFound(
-        transcript.video_id, "pt", None
-    )
+    mock_transcript = MagicMock()
+    mock_transcript_lines = mock_transcript.fetch.return_value
+    mock_yt.get_transcript.side_effect = NoTranscriptFound("", "pt", None)
     mock_yt.list_transcripts.return_value = TranscriptList(
-        transcript.video_id, {"pt": Transcript}, {}, [{}]
+        "", {"pt": mock_transcript}, {}, [{}]
     )
     mock_formatter().format_transcript.return_value = transcript_text
     result = TranscriptFetcher.get_transcript(yt_url)
     assert result == transcript_text
-    mock_formatter().format_transcript.assert_called_with(transcript)
+    mock_formatter().format_transcript.assert_called_with(
+        mock_transcript_lines
+    )
