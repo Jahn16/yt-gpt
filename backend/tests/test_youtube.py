@@ -5,8 +5,10 @@ from youtube_transcript_api import (
     NoTranscriptFound,
     Transcript,
     TranscriptList,
+    TranscriptsDisabled,
 )
 
+from app.errors.youtube import TranscriptNotFoundError
 from app.providers.youtube import TranscriptFetcher
 
 
@@ -80,3 +82,18 @@ def test_get_transcript_english_not_found(
     mock_formatter().format_transcript.assert_called_with(
         mock_transcript_lines
     )
+
+
+def test_get_transcript_disabled(yt_url: str, mocker):
+    mock_yt = mocker.patch("app.providers.youtube.YouTubeTranscriptApi")
+    mock_yt.get_transcript.side_effect = TranscriptsDisabled(yt_url)
+    with pytest.raises(TranscriptNotFoundError):
+        TranscriptFetcher.get_transcript(yt_url)
+
+
+def test_get_transcript_not_found(yt_url: str, mocker):
+    mock_yt = mocker.patch("app.providers.youtube.YouTubeTranscriptApi")
+    mock_yt.get_transcript.side_effect = NoTranscriptFound(yt_url, "pt", None)
+    mock_yt.list_transcripts.return_value = TranscriptList("", {}, {}, [{}])
+    with pytest.raises(TranscriptNotFoundError):
+        TranscriptFetcher.get_transcript(yt_url)
