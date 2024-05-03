@@ -61,16 +61,16 @@ def test_get_transcript(transcript: Transcript, transcript_text: str, mocker):
     assert result == transcript_text
 
 
-def test_get_transcript_not_found(
+def test_get_transcript_english_not_found(
     yt_url: str, transcript: Transcript, transcript_text: str, mocker
 ):
     mock_yt = mocker.patch("app.providers.youtube.YouTubeTranscriptApi")
     mock_formatter = mocker.patch("app.providers.youtube.TextFormatter")
     mock_yt.get_transcript.side_effect = NoTranscriptFound(
-        transcript.video_id, "en", None
+        transcript.video_id, "pt", None
     )
     mock_yt.list_transcripts.return_value = TranscriptList(
-        transcript.video_id, {"en": Transcript}, {}, [{}]
+        transcript.video_id, {"pt": Transcript}, {}, [{}]
     )
     mock_formatter().format_transcript.return_value = transcript_text
     result = TranscriptFetcher.get_transcript(yt_url)
