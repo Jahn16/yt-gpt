@@ -1,0 +1,14 @@
+services:
+  ytgpt-backend:
+    image: jpdeoliveiraferreira/ytgpt-backend:latest
+    environment:
+      CORS_ORIGINS: '["http://localhost:3000"]'
+      OPENAI_API_KEY: <OPENAI_API_KEY>
+    ports:
+      - 8000:8000
+  ytgpt-frontend:
+    image: jpdeoliveiraferreira/ytgpt-frontend:latest
+    environment:
+      PUBLIC_BACKEND_URL: 'http://localhost:8000'
+    ports:
+      - 3000:3000
