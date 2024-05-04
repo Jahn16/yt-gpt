@@ -18,8 +18,9 @@ export const callGPT = async (prompt: string, video: Video): Promise<string> => 
     video: video
   }
   const response = await fetch(`${env.PUBLIC_BACKEND_URL}/api/v1/gpt`, { method: 'POST', body: JSON.stringify(data), headers: { 'Content-Type': 'application/json' } })
+  const result = await response.json()
   if (!response.ok) {
-    throw new Error(`😔 Sorry! There was an error calling GPT. ${response.statusText}`)
+    throw new Error(`😔 Sorry! There was an error calling GPT. ${result["detail"]}`)
   }
-  return await response.json()
+  return result
 }
