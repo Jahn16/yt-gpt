@@ -5,3 +5,7 @@ body {
   min-width: 320px;
   min-height: 100vh;
 }
+
+.card-body p {
+  margin-bottom: 0;
+}
