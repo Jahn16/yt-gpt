@@ -1,6 +1,7 @@
 <script lang="ts">
 	import Message from '../components/Message.svelte';
-  import Export from '../components/Export.svelte';
+	import Export from '../components/Export.svelte';
+	import Footer from '../components/Footer.svelte';
 	import type { Chat, Video } from '../models';
 	import { getTranscription, callGPT } from '$lib/requests';
 
@@ -70,8 +71,8 @@
 				/>
 				<button class="btn btn-primary" type="submit" id="button-addon2" disabled={loading}>
 					{#if loading}
-						Loading 
-            <div class="spinner-border spinner-border-sm" role="status">
+						Loading
+						<div class="spinner-border spinner-border-sm" role="status">
 							<span class="sr-only"></span>
 						</div>
 					{:else}
@@ -80,9 +81,10 @@
 				</button>
 			</div>
 		</form>
-    <Export {chat} />
+		<Export {chat} />
 	</div>
 
+	<Footer />
 </div>
 
 <style>
