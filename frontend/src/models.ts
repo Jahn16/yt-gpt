@@ -9,3 +9,11 @@ export interface Video {
   title: string
   transcription: string
 }
+
+export interface shareGPTChat {
+  avatarUrl: string
+  items: {
+    from: string
+    value: string
+  }[]
+}
