@@ -1,5 +1,6 @@
 <script lang="ts">
 	import Message from '../components/Message.svelte';
+  import Export from '../components/Export.svelte';
 	import type { Chat, Video } from '../models';
 	import { getTranscription, callGPT } from '$lib/requests';
 
@@ -79,7 +80,9 @@
 				</button>
 			</div>
 		</form>
+    <Export {chat} />
 	</div>
+
 </div>
 
 <style>
