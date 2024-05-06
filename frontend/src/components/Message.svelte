@@ -3,16 +3,19 @@
 	import type { ChatMessage } from '../models';
 
 	export let message: ChatMessage;
-  const copyToClipboard = () => {
-    navigator.clipboard.writeText(message.content);
-  }
+	const copyToClipboard = () => {
+		navigator.clipboard.writeText(message.content);
+	};
 </script>
 
 <div class="col">
 	<div class="card border-{message.author === 'bot' ? 'secondary' : 'success'}">
 		<div class="card-body">
-			<SvelteMarkdown source={message.content} />
-
+			{#if message.author === 'bot'}
+				<SvelteMarkdown source={message.content} />
+			{:else}
+				<p>{message.content}</p>
+			{/if}
 			<button id="copy" type="button" class="btn btn-link btn-sm" on:click={copyToClipboard}>
 				<i class="bi bi-clipboard"></i>
 			</button>
@@ -31,6 +34,6 @@
 	}
 	#copy {
 		float: right;
-    padding: 0px;
+		padding: 0px;
 	}
 </style>
