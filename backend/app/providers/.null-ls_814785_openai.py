@@ -24,7 +24,7 @@ class OpenAIClient:
                 messages=[
                     {
                         "role": "system",
-                        "content": f"You are an assistant that will receive a transcript from a video. Your task is to read the text and answer this question according to the text provided: {prompt.prompt}. Answer in the languague that the question is written in. The video title is {prompt.video.title} and trascript is: {prompt.video.transcription}. Respond using markdown format.",  # noqa: E501
+                        "content": f"You are an assistant that will receive a transcript from a video. Your task is to read the text and answer this question: {prompt.prompt}. Answer in the languague that the question is written in. The video title is {prompt.video.title} and trascript is: {prompt.video.transcription}. Respond using markdown format.",  # noqa: E501
                     },
                 ],
                 model=self._model,
