@@ -1,4 +1,16 @@
 import type { Chat, shareGPTChat } from '../models';
+import { marked } from 'marked';
+
+const markdownToHTML = (markdown: string): string => {
+  let render = new marked.Renderer();
+  render.paragraph = (text) => {
+    return text
+  }
+  render.link = (href, title, text) => {
+    return text
+  }
+  return marked(markdown, { renderer: render })
+}
 
 const convertChat = (chat: Chat): shareGPTChat => {
   const items: shareGPTChat['items'] = []
@@ -6,7 +18,7 @@ const convertChat = (chat: Chat): shareGPTChat => {
     items.push(
       {
         from: chatMessage.author === 'user' ? 'human' : 'gpt',
-        value: chatMessage.content
+        value: markdownToHTML(chatMessage.content)
       }
     )
   })
