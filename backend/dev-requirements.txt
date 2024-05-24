@@ -18,6 +18,10 @@ markdown-it-py==3.0.0
     # via rich
 mdurl==0.1.2
     # via markdown-it-py
+mypy==1.10.0
+    # via -r dev-requirements.in
+mypy-extensions==1.0.0
+    # via mypy
 nodeenv==1.8.0
     # via pre-commit
 packaging==24.0
@@ -40,6 +44,10 @@ pyyaml==6.0.1
     # via pre-commit
 rich==13.7.1
     # via -r dev-requirements.in
+typing-extensions==4.10.0
+    # via
+    #   -c requirements.txt
+    #   mypy
 virtualenv==20.25.1
     # via pre-commit
 
