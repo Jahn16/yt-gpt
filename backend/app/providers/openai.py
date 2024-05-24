@@ -20,7 +20,6 @@ class OpenAIClient:
 
     def _select_model(self, message: str) -> str:
         num_tokens = self._calculate_tokens(message)
-        logger.debug(num_tokens)
         if num_tokens > 16000:
             return "gpt-4-turbo"
         return "gpt-3.5-turbo"
@@ -42,7 +41,7 @@ class OpenAIClient:
             )
         except APIError as e:
             await logger.aexception("Chat completion failed", model=model)
-            if e.code == "context_length_exceeded":
+            if e.code in ["context_length_exceeded", "rate_limit_exceeded"]:
                 raise ContextLengthError()
             raise GPTError(e.message)
         await logger.ainfo("Chat completion completed", model=model)
