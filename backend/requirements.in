@@ -5,3 +5,4 @@ structlog
 pydantic-settings
 openai
 pytube
+tiktoken
