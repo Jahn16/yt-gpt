@@ -35,7 +35,10 @@ async def gpt(
     except ContextLengthError:
         raise HTTPException(
             status_code=400,
-            detail="The transcription is too long and cannot be processed",
+            detail=(
+                "The transcription is too long and cannot be processed. "
+                "Please refresh and try a shorter video!"
+            ),
         )
     except GPTError as e:
         raise HTTPException(status_code=500, detail=str(e))
