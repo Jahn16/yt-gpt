@@ -36,7 +36,10 @@
 				return;
 			}
 			addMessageToChat(
-				"The transcription is complete. 🎉 Please feel free to ask me any questions you have about the video's content. Let's dive in!",
+				`📹 **Video:** ${video.title} <br /><br />
+                 🎉 The transcription for the video is complete. <br />
+                 🤔 Please feel free to ask me any questions you have about the video's content. Let's dive in!`,
+
 				'bot'
 			);
 			loading = false;
