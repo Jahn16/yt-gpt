@@ -4,9 +4,9 @@ class YoutubeError(Exception):
     """
 
 
-class InvalidUrlError(YoutubeError):
+class InvalidYoutubeIDError(YoutubeError):
     """
-    Raised when YouTube URL is invalid
+    Raised when YouTube ID is invalid
     """
 
 

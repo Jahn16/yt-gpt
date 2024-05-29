@@ -3,7 +3,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from app.config import Settings
 from app.deps import get_settings
 from app.errors.gpt import ContextLengthError, GPTError
-from app.errors.youtube import InvalidUrlError, TranscriptNotFoundError
+from app.errors.youtube import InvalidYoutubeIDError, TranscriptNotFoundError
 from app.providers.openai import OpenAIClient
 from app.providers.youtube import YoutubeClient
 from app.schemas.prompt import Prompt
@@ -18,7 +18,7 @@ def transcribe(youtube_id: str) -> Video:
     try:
         video_title = youtube_client.get_title(youtube_id)
         transcription = youtube_client.get_transcript(youtube_id)
-    except InvalidUrlError as e:
+    except InvalidYoutubeIDError as e:
         raise HTTPException(status_code=400, detail=str(e))
     except TranscriptNotFoundError as e:
         raise HTTPException(status_code=404, detail=str(e))
