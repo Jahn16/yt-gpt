@@ -3,7 +3,7 @@ from typing import cast
 
 import structlog
 from pytube import YouTube
-from pytube.exceptions import RegexMatchError
+from pytube.exceptions import RegexMatchError, VideoUnavailable
 from youtube_transcript_api import (
     NoTranscriptFound,
     Transcript,
@@ -12,7 +12,7 @@ from youtube_transcript_api import (
 )
 from youtube_transcript_api.formatters import TextFormatter
 
-from app.errors.youtube import InvalidUrlError, TranscriptNotFoundError
+from app.errors.youtube import InvalidYoutubeIDError, TranscriptNotFoundError
 
 logger = structlog.get_logger()
 
@@ -42,10 +42,11 @@ class PytubeFetcher(MetadataFetcher):
         yt_url = f"https://www.youtube.com/watch?v={yt_id}"
         try:
             yt = YouTube(yt_url)
-        except RegexMatchError:
+            title = yt.title
+        except (RegexMatchError, VideoUnavailable):
             logger.warning("Invalid YouTube URL", youtube_url=yt_id)
-            raise InvalidUrlError(f"Invalid YouTube URL: {yt_url}")
-        return cast(str, yt.title)
+            raise InvalidYoutubeIDError(f"Invalid YouTube ID: {yt_id}")
+        return cast(str, title)
 
 
 class TranscriptFetcher:
