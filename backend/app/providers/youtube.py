@@ -1,6 +1,5 @@
 import abc
 from typing import cast
-from urllib.parse import parse_qs, urlparse
 
 import structlog
 from pytube import YouTube
@@ -33,38 +32,25 @@ class YoutubeClient:
 class MetadataFetcher(abc.ABC):
     @staticmethod
     @abc.abstractmethod
-    def get_video_title(yt_url: str) -> str:
+    def get_video_title(yt_id: str) -> str:
         raise NotImplementedError
 
 
 class PytubeFetcher(MetadataFetcher):
     @staticmethod
-    def get_video_title(yt_url: str) -> str:
+    def get_video_title(yt_id: str) -> str:
+        yt_url = f"https://www.youtube.com/watch?v={yt_id}"
         try:
             yt = YouTube(yt_url)
         except RegexMatchError:
-            logger.warning("Invalid YouTube URL", youtube_url=yt_url)
+            logger.warning("Invalid YouTube URL", youtube_url=yt_id)
             raise InvalidUrlError(f"Invalid YouTube URL: {yt_url}")
         return cast(str, yt.title)
 
 
 class TranscriptFetcher:
     @staticmethod
-    def _get_youtube_id(yt_url: str) -> str:
-        parse_result = urlparse(yt_url)
-        if parse_result.netloc == "www.youtube.com":
-            query = parse_qs(parse_result.query)
-            if "v" in query:
-                return query["v"][0]
-        elif parse_result.netloc == "youtu.be":
-            return parse_result.path[1:]
-        logger.warning("Invalid YouTube URL", youtube_url=yt_url)
-        raise InvalidUrlError(f"Invalid YouTube URL: {yt_url}")
-
-    @staticmethod
-    def get_transcript(yt_url: str) -> str:
-        yt_id = TranscriptFetcher._get_youtube_id(yt_url)
-
+    def get_transcript(yt_id: str) -> str:
         logger.info("Fetching transcript", youtube_id=yt_id)
         formatter = TextFormatter()
         try:
