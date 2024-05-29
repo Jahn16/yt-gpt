@@ -28,7 +28,10 @@
 			try {
 				video = await getTranscription(youtubeUrl);
 			} catch (e: unknown) {
-				addMessageToChat(e.message, 'bot');
+				addMessageToChat(
+					`😔 Sorry! There was an error fetching the transcription. ${e.message}`,
+					'bot'
+				);
 				loading = false;
 				return;
 			}
