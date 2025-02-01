@@ -4,5 +4,4 @@ youtube-transcript-api
 structlog
 pydantic-settings
 openai
-pytube
 tiktoken
