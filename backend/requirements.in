@@ -5,3 +5,5 @@ structlog
 pydantic-settings
 openai
 tiktoken
+requests
+beautifulsoup4
