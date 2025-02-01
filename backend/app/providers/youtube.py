@@ -22,13 +22,13 @@ class YoutubeClient:
         self._metadata_fetcher = RequestFetcher
         self._transcript_fetcher = TranscriptFetcher
 
-    def get_title(self, yt_url: str) -> str:
-        logger.info("Fetching youtube title", yt_id=yt_url)
-        return self._metadata_fetcher.get_video_title(yt_url)
+    def get_title(self, yt_id: str) -> str:
+        logger.info("Fetching youtube title", yt_id=yt_id)
+        return self._metadata_fetcher.get_video_title(yt_id)
 
-    def get_transcript(self, yt_url: str) -> str:
-        logger.info("Fetching youtube transcript", yt_id=yt_url)
-        return self._transcript_fetcher.get_transcript(yt_url)
+    def get_transcript(self, yt_id: str) -> str:
+        logger.info("Fetching youtube transcript", yt_id=yt_id)
+        return self._transcript_fetcher.get_transcript(yt_id)
 
 
 class MetadataFetcher(abc.ABC):
