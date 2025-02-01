@@ -2,8 +2,6 @@ import abc
 from typing import cast
 
 import structlog
-from pytube import YouTube
-from pytube.exceptions import RegexMatchError, VideoUnavailable
 from youtube_transcript_api import (
     NoTranscriptFound,
     Transcript,
@@ -13,13 +11,15 @@ from youtube_transcript_api import (
 from youtube_transcript_api.formatters import TextFormatter
 
 from app.errors.youtube import InvalidYoutubeIDError, TranscriptNotFoundError
+import requests
+from bs4 import BeautifulSoup
 
 logger = structlog.get_logger()
 
 
 class YoutubeClient:
     def __init__(self) -> None:
-        self._metadata_fetcher = PytubeFetcher
+        self._metadata_fetcher = RequestFetcher
         self._transcript_fetcher = TranscriptFetcher
 
     def get_title(self, yt_url: str) -> str:
@@ -38,17 +38,17 @@ class MetadataFetcher(abc.ABC):
         raise NotImplementedError
 
 
-class PytubeFetcher(MetadataFetcher):
+class RequestFetcher(MetadataFetcher):
     @staticmethod
     def get_video_title(yt_id: str) -> str:
         yt_url = f"https://www.youtube.com/watch?v={yt_id}"
-        try:
-            yt = YouTube(yt_url)
-            title = yt.title
-        except (RegexMatchError, VideoUnavailable):
-            logger.warning("Invalid YouTube URL", youtube_url=yt_id)
-            raise InvalidYoutubeIDError(f"Invalid YouTube ID: {yt_id}")
-        return cast(str, title)
+        res = requests.get(yt_url)
+        soup = BeautifulSoup(res.text, "html.parser")
+        titles = soup.find_all(name="title")
+        if not titles:
+            logger.warning("No title found")
+            return ""
+        return titles[0].text.replace(" - YouTube", "")
 
 
 class TranscriptFetcher:
