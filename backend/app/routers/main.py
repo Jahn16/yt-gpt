@@ -1,4 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException
+from structlog.contextvars import (
+    bind_contextvars,
+    unbind_contextvars
+)
 
 from app.config import Settings
 from app.deps import get_settings
@@ -9,11 +13,13 @@ from app.providers.youtube import YoutubeClient
 from app.schemas.prompt import Prompt
 from app.schemas.video import Video
 
+
 router = APIRouter()
 
 
 @router.get("/transcribe")
 def transcribe(youtube_id: str) -> Video:
+    bind_contextvars(yt_id=youtube_id)
     youtube_client = YoutubeClient()
     try:
         video_title = youtube_client.get_title(youtube_id)
@@ -22,7 +28,9 @@ def transcribe(youtube_id: str) -> Video:
         raise HTTPException(status_code=400, detail=str(e))
     except TranscriptNotFoundError as e:
         raise HTTPException(status_code=404, detail=str(e))
-    return Video(title=video_title, transcription=transcription)
+    video = Video(title=video_title, transcription=transcription)
+    unbind_contextvars("yt_id")
+    return video
 
 
 @router.post("/gpt")

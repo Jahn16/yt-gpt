@@ -60,21 +60,21 @@ class TranscriptFetcher:
                 dict[str, str]
             ] = YouTubeTranscriptApi.get_transcript(yt_id)
         except TranscriptsDisabled:
-            logger.warning("Transcripts disabled", youtube_id=yt_id)
+            logger.warning("Transcripts disabled")
             raise TranscriptNotFoundError(
                 "Transcripts disabled for this video"
             )
         except NoTranscriptFound:
-            logger.info("No english transcript found", youtube_id=yt_id)
+            logger.info("No english transcript found")
         else:
-            logger.info("Transcript found", youtube_id=yt_id)
+            logger.info("Transcript found")
             return cast(str, formatter.format_transcript(transcript_lines))
 
         transcript_list = YouTubeTranscriptApi.list_transcripts(yt_id)
         try:
             transcript: Transcript = transcript_list.__iter__().__next__()
         except StopIteration:
-            logger.info("No transcript found", youtube_id=yt_id)
+            logger.info("No transcript found")
             raise TranscriptNotFoundError("No transcript found")
         transcript_lines = transcript.fetch()
         logger.info(
