@@ -23,9 +23,11 @@ class YoutubeClient:
         self._transcript_fetcher = TranscriptFetcher
 
     def get_title(self, yt_url: str) -> str:
+        logger.info("Fetching youtube title", yt_id=yt_url)
         return self._metadata_fetcher.get_video_title(yt_url)
 
     def get_transcript(self, yt_url: str) -> str:
+        logger.info("Fetching youtube transcript", yt_id=yt_url)
         return self._transcript_fetcher.get_transcript(yt_url)
 
 
@@ -52,7 +54,6 @@ class PytubeFetcher(MetadataFetcher):
 class TranscriptFetcher:
     @staticmethod
     def get_transcript(yt_id: str) -> str:
-        logger.info("Fetching transcript", youtube_id=yt_id)
         formatter = TextFormatter()
         try:
             transcript_lines: list[
